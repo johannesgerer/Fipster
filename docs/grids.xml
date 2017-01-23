@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jML>
+	<!-- 
+       n: (Total, including boundary) number of points
+
+
+       tolerance: 
+
+           checks the relative difference between calculated highest
+           grid coordinate and the specifed upper bound of the grid
+					 
+
+       spacing: homogeneous | exponential (h)
+			 
+			     with optional variables influencing the distribution of nodes
+			     -->
+  <grid id="Grid1" >
+
+    <stateVariable nr="1">
+      <n>10</n>
+      <lowerBound>0</lowerBound>
+      <upperBound>100.0</upperBound>
+      <spacing type="exponential">
+        <h>0.1</h>
+      </spacing>
+      <tolerance>1e-150</tolerance>
+			<!-- checks the relative difference between calculated highest
+			     grid coordinate and the specifed upper bound of the grid
+			     -->
+    </stateVariable>
+
+    <stateVariable nr="2">
+      <n>55</n>
+      <lowerBound>0</lowerBound>
+      <upperBound>1.0</upperBound>
+      <spacing type="homogeneous" />
+      <tolerance>1e-15</tolerance>
+    </stateVariable>
+    <!--
+      <stateVariable nr="3">
+        <n>50</n>
+        <lowerBound>0</lowerBound>
+        <upperBound>1.0</upperBound>
+        <spacing type="homogeneous" />
+        <tolerance>1e-15</tolerance>
+      </stateVariable>    
+  -->
+  </grid>
+
+  <grid id="Grid1r">
+    <stateVariable nr="1" >
+      <n>100</n>
+      <lowerBound>0</lowerBound>
+      <upperBound>10.0</upperBound>
+      <spacing type="homogeneous"/>
+      <tolerance>1e-100</tolerance>
+    </stateVariable>
+  </grid>
+
+  <grid id="Grid2">
+    <stateVariable nr="1" >
+      <n>4000</n>
+      <lowerBound>0</lowerBound>
+      <upperBound>600.0</upperBound>
+      <spacing type="exponential">
+        <h>4</h>
+      </spacing> 
+      <tolerance>1e-14</tolerance>
+    </stateVariable>
+  </grid>
+
+  <grid id="Grid3">
+    <stateVariable nr="1" >
+      <n>100</n>
+      <lowerBound>0</lowerBound>
+      <upperBound>200.0</upperBound>
+      <spacing type="homogeneous"/>
+      <tolerance>1e-100</tolerance>
+    </stateVariable>
+  </grid>
+  
+ </jML>

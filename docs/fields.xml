@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+For Rannacher Steps documentation see expectation_value_node_factory.cpp.
+        
+     <field id="Call1" type="explicit_field">
+        <type>Call</type>
+        <interest>0.05</interest>
+        <volatility>0.2</volatility>
+        <correlation>0.2</correlation>
+        <dividend>0.09</dividend>
+        <strike>50</strike>
+        <expiration>10000</expiration>
+      </field>
+      
+      not yet implemented:
+      
+       <field id="{}" type="explicit_field">
+        <type>Call</type>
+       <sameAs>CallOption1</sameAs>
+       </field>
+  -->
+
+<jML>
+
+  
+  <field id="Call1" type="explicit_field">
+    <type>Call</type>
+    <interest>0.05</interest>
+    <volatility>0.2</volatility>
+    <correlation>0.2</correlation>
+    <dividend>0.09</dividend>
+    <strike>50</strike>
+    <expiration>60000</expiration>
+  </field>
+
+
+  <field id="CallPayoff1" type="explicit_field">
+    <type>CallPayoff</type>
+    <strike>50</strike>
+		<factor>-1</factor>
+  </field>
+
+
+  <field id="CallOption1" type="expectation_value">
+    <field>CallPayoff1</field>
+    <boundaryConditions>testBC</boundaryConditions>
+    <finiteDifferenceWeights>BSiso1</finiteDifferenceWeights>
+    <stoppingTime min="0" max="60000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>2000</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>1</theta>
+    </timeStepping>
+  </field>
+
+  <field id="CallOptionCN" type="expectation_value">
+    <field>CallPayoff1</field>
+    <boundaryConditions>testBC</boundaryConditions>
+    <finiteDifferenceWeights>BSiso1</finiteDifferenceWeights>
+    <stoppingTime min="60000" max="60000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>200</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>0.5</theta>
+      <rannacherTimeStepping steps="3">
+        <stepSize>30</stepSize>
+        <strangSymmetrization>false</strangSymmetrization>
+        <theta>1</theta>
+      </rannacherTimeStepping>
+    </timeStepping>
+    
+  </field>
+
+
+
+
+  <field id="CallCall1" type="expectation_value">
+    <field>CallOption1</field>
+    <boundaryConditions>testBC</boundaryConditions>
+    <finiteDifferenceWeights>BSiso1</finiteDifferenceWeights>
+    <stoppingTime min="0" max="1000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>100</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>1</theta>
+    </timeStepping>
+  </field>
+
+
+  <field id="CallCall1r" type="expectation_value">
+    <field>CallOption1</field>
+    <boundaryConditions>testBC</boundaryConditions>
+    <finiteDifferenceWeights>BSiso1r</finiteDifferenceWeights>
+    <stoppingTime min="0" max="1000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>100</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>1</theta>
+    </timeStepping>
+  </field>
+
+</jML>

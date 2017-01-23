@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jML>
+
+<grid id="AmericanPutBenchmarkGrid">
+  <stateVariable nr="1" >
+    <n>100</n>
+    <lowerBound>0</lowerBound>
+    <upperBound>200.0</upperBound>
+    <spacing type="exponential">
+      <h>2</h>
+    </spacing>
+    <tolerance>1e-14</tolerance>
+  </stateVariable>
+</grid>
+
+<boundaryConditions id="AmericanPutBenchmarkBCs" tolerance="1e-14">
+  <stateVariable nr="1">
+    <lower  type="Dirichlet" inhomSource="exerciseValue" />
+    <upper  type="vonNeumann" inhomSource="exerciseValue"/>
+  </stateVariable>
+</boundaryConditions>
+  
+<finiteDifferenceWeights id="AmericanPutBenchmarkFDWsMultiDim">
+  <stencilType>StencilOneDiagonal</stencilType>
+  <PDE type="BlackScholesIsometric">
+    <interest>0.03</interest>
+    <volatility>0.2</volatility>
+    <correlation>0.5</correlation>
+    <dividend>0.0</dividend>
+  </PDE>
+  <partialDerivativeOrder>2</partialDerivativeOrder>
+  <higherOrderWeight>0.9</higherOrderWeight>
+</finiteDifferenceWeights>
+
+  <finiteDifferenceWeights id="AmericanPutBenchmarkFDWs1">
+    <stencilType>StencilOneDiagonal</stencilType>
+    <PDE type="BlackScholesIsometricGeometricAverage">
+      <finiteDifferenceWeights>AmericanPutBenchmarkFDWsMultiDim</finiteDifferenceWeights>
+      <dimension>1</dimension>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+  <finiteDifferenceWeights id="AmericanPutBenchmarkFDWs2">
+    <stencilType>StencilOneDiagonal</stencilType>
+    <PDE type="BlackScholesIsometricGeometricAverage">
+      <finiteDifferenceWeights>AmericanPutBenchmarkFDWsMultiDim</finiteDifferenceWeights>
+      <dimension>2</dimension>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+  <finiteDifferenceWeights id="AmericanPutBenchmarkFDWs3">
+    <stencilType>StencilOneDiagonal</stencilType>
+    <PDE type="BlackScholesIsometricGeometricAverage">
+      <finiteDifferenceWeights>AmericanPutBenchmarkFDWsMultiDim</finiteDifferenceWeights>
+      <dimension>3</dimension>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+
+<field id="AmericanPutBenchmarkPayoff" type="explicit_field">
+  <type>PutPayoff</type>
+  <strike>100</strike>
+</field>
+
+  <field id="AmericanPutBenchmarkOption1" type="expectation_value">
+    <field>AmericanPutBenchmarkPayoff</field>
+    <boundaryConditions>AmericanPutBenchmarkBCs</boundaryConditions>
+    <finiteDifferenceWeights>AmericanPutBenchmarkFDWs1</finiteDifferenceWeights>
+    <stoppingTime min="0" max="200000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>200</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>0.5</theta>
+      <rannacherTimeStepping steps="5">
+        <stepSize>05</stepSize>
+        <strangSymmetrization>false</strangSymmetrization>
+        <theta>1</theta>
+      </rannacherTimeStepping>
+    </timeStepping>
+  </field>
+    <field id="AmericanPutBenchmarkOption2" type="expectation_value">
+      <field>AmericanPutBenchmarkPayoff</field>
+      <boundaryConditions>AmericanPutBenchmarkBCs</boundaryConditions>
+      <finiteDifferenceWeights>AmericanPutBenchmarkFDWs2</finiteDifferenceWeights>
+      <stoppingTime min="0" max="200000" />
+      <timeStepping>
+        <offset>0</offset>
+        <stepSize>200</stepSize>
+        <strangSymmetrization>true</strangSymmetrization>
+        <theta>0.5</theta>
+        <rannacherTimeStepping steps="5">
+          <stepSize>05</stepSize>
+          <strangSymmetrization>false</strangSymmetrization>
+          <theta>1</theta>
+        </rannacherTimeStepping>
+      </timeStepping>
+    </field>
+      <field id="AmericanPutBenchmarkOption3" type="expectation_value">
+        <field>AmericanPutBenchmarkPayoff</field>
+        <boundaryConditions>AmericanPutBenchmarkBCs</boundaryConditions>
+        <finiteDifferenceWeights>AmericanPutBenchmarkFDWs3</finiteDifferenceWeights>
+        <stoppingTime min="0" max="200000" />
+        <timeStepping>
+          <offset>0</offset>
+          <stepSize>200</stepSize>
+          <strangSymmetrization>true</strangSymmetrization>
+          <theta>0.5</theta>
+          <rannacherTimeStepping steps="5">
+            <stepSize>05</stepSize>
+            <strangSymmetrization>false</strangSymmetrization>
+            <theta>1</theta>
+          </rannacherTimeStepping>
+        </timeStepping>
+      </field>
+
+
+<solution active="1" name="AmericanPutBenchmark">
+  <fields>
+  <field>AmericanPutBenchmarkOption1</field>
+  <field>AmericanPutBenchmarkOption2</field>
+  <field>AmericanPutBenchmarkOption3</field>
+  </fields>
+  <time>150000</time>
+  <fixedPlotTime>200000</fixedPlotTime>
+  <grid>AmericanPutBenchmarkGrid</grid>
+  <singleValues>
+    <at>
+      <x>100</x>
+    </at>
+  </singleValues>
+
+
+</solution>
+
+</jML>

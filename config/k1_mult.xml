@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jML>
+  <globalConfig>
+    <tests>
+      <splitting tolerance="1e-15"> true </splitting>
+      <A_o> true </A_o>
+      <tridiagonally_split_grid_operator> true </tridiagonally_split_grid_operator>
+      <bc_inversion> true </bc_inversion>
+      <gsi_gather_scatter> true </gsi_gather_scatter>
+      <grid_iterators> true </grid_iterators>
+      <boundary_condition_iterator> true </boundary_condition_iterator>
+    </tests>
+    <flow_graph>
+      <serial> false </serial>
+      <processors>
+        <!-- 0 = 'automatic'  --> 0
+      </processors>
+    </flow_graph>
+    <years_per_btick>1e-8</years_per_btick>
+    <outputPath>../output/k1Mult</outputPath>
+  </globalConfig>
+
+<grid id="grid1">
+  <stateVariable nr="1" >
+   <n>800</n>
+    <lowerBound>0</lowerBound>
+    <upperBound>300</upperBound>
+    <spacing type="exponential">
+      <h>2</h>
+    </spacing>
+    <tolerance>1e-14</tolerance>
+  </stateVariable>
+</grid>
+
+<boundaryConditions id="BCs1" tolerance="1e-14">
+  <stateVariable nr="1">
+    <lower  type="Dirichlet" inhomSource="futureValue"/>
+    <upper  type="Dirichlet" inhomSource="futureValue"/>
+    <!-- <upper  type="vonNeumann" inhomSource="futureValue"/> -->
+    <!-- <lower  type="vonNeumann" inhomSource="futureValue"/> -->
+    <!-- <upper  type="vonNeumann" inhomValue="zero"/> -->
+    <!-- <lower  type="vonNeumann" inhomValue="zero"/> -->
+  </stateVariable>
+</boundaryConditions>
+
+<field id="payoff1" type="explicit_field">
+  <type>PutPayoff</type>
+  <strike>100</strike>
+</field>
+
+<finiteDifferenceWeights id="BSIsoWAm">
+  <stencilType>OneDiagonal</stencilType>
+  <PDE type="BSIso">
+    <discountingRate>0.05</discountingRate>
+    <volatility>.4</volatility>
+    <correlation>0.0</correlation>
+    <drift>.05</drift>
+  </PDE>
+  <partialDerivativeOrder>2</partialDerivativeOrder>
+  <higherOrderWeight>0.9</higherOrderWeight>
+</finiteDifferenceWeights>
+
+<expectation id="AmExpectation">
+  <boundaryConditions>BCs1</boundaryConditions>
+  <finiteDifferenceWeights>BSIsoWAm</finiteDifferenceWeights>
+  <strangSymmetrization>true</strangSymmetrization>
+  <timeStepping>
+    <offset>0</offset>
+    <stepSize>0.1e6</stepSize>
+  </timeStepping>
+  <theta>0.5</theta>
+  <rannacherSteps steps="2">
+    <strangSymmetrization>false</strangSymmetrization>
+    <stepSize>0.05e6</stepSize>
+    <theta>1</theta>
+  </rannacherSteps>
+</expectation>
+
+<option id="AmOption">
+  <discountingRate>0.0</discountingRate>
+	<expectation>AmExpectation</expectation>
+	<times>
+		<stop>1e8</stop>
+		<offset>1e8</offset>
+		<stepSize>0.1e6</stepSize>
+	</times>
+	<exercise>
+		<implicit>false</implicit>
+		<value>payoff1</value>
+	</exercise>
+</option>
+
+
+
+<finiteDifferenceWeights id="BSIsoW">
+  <stencilType>OneDiagonal</stencilType>
+  <PDE type="BSIso">
+    <discountingRate>0.0</discountingRate>
+    <volatility>.4</volatility>
+    <correlation>0.0</correlation>
+    <drift>.07</drift>
+  </PDE>
+  <partialDerivativeOrder>2</partialDerivativeOrder>
+  <higherOrderWeight>0.9</higherOrderWeight>
+</finiteDifferenceWeights>
+
+
+<expectation id="Expectation1">
+  <boundaryConditions>BCs1</boundaryConditions>
+  <finiteDifferenceWeights>BSIsoW</finiteDifferenceWeights>
+  <strangSymmetrization>true</strangSymmetrization>
+  <timeStepping>
+    <offset>0</offset>
+    <stepSize>0.1e6</stepSize>
+  </timeStepping>
+  <theta>0.5</theta>
+  <rannacherSteps steps="2">
+    <strangSymmetrization>false</strangSymmetrization>
+    <stepSize>0.05e6</stepSize>
+    <theta>1</theta>
+  </rannacherSteps>
+</expectation>
+
+<option id="Option">
+  <discountingRate>0.05</discountingRate>
+	<expectation>Expectation1</expectation>
+	<times>
+		<stop>1e8</stop>
+		<offset>1e8</offset>
+		<stepSize>0.1e7</stepSize>
+	</times>
+	<entropicTheta>-0.001</entropicTheta>
+	<hedging>
+		<transactionCosts k0="0.0" k1="0.001"  infinite="false"/>
+		<grid>hedging_grid_f</grid>
+	</hedging>
+	<exercise>
+		<implicit>false</implicit>
+		<value>payoff1</value>
+	</exercise>
+</option>
+
+<grid id="hedging_grid_f">
+	<maxSubgrid>0</maxSubgrid>
+	<!-- specify what subgrid this grid allow
+  -->
+  <stateVariable nr="1">
+    <n>100</n>
+    <lowerBound>0</lowerBound>
+    <upperBound>2</upperBound>
+		<!-- shift grid (minimally) to include zero -->
+    <spacing type="homogeneous" hitsZero="false"/>
+    <!-- <spacing type="exponential" hitsZero="true"> -->
+    <!--   <h>.8</h> -->
+    <!-- </spacing> -->
+    <tolerance>1e-15</tolerance>
+  </stateVariable>
+</grid>
+
+<solution active="1" id="Decisions1">
+  <fields>
+		<!-- <option id="AmOption" exercise="always"/> -->
+		<!-- <option id="Option" exercise="always"> -->
+		<!-- 	<at><n>97</n></at> -->
+		<!-- 	<deltaHedging> -->
+		<!-- 		<option id="AmOption" exercise="always"/> -->
+		<!-- 	</deltaHedging> -->
+		<!-- </option> -->
+		<!-- <option id="Option" exercise="never"> -->
+		<!-- 	<at><n>97</n></at> -->
+		<!-- 	<at><n>77</n></at> -->
+		<!-- </option> -->
+		<option id="Option" exercise="always">
+			<at><n>70</n></at>
+			<at><n>50</n></at>
+			<at><n>47</n></at>
+		</option>
+  </fields>
+  <times>
+    <start>0.5e8</start>
+    <offset>1e8</offset>
+    <stop>1e8</stop>
+    <stepSize>1e7</stepSize>
+  </times>
+  <fixedPlotTime>1e8</fixedPlotTime>
+  <grid>grid1</grid>
+  <singleValues>
+    <at><x>80</x></at>
+    <at><x>85</x></at>
+    <at><x>90</x></at>
+    <at><x>95</x></at>
+    <at><x>100</x></at>
+    <at><x>105</x></at>
+    <at><x>110</x></at>
+    <at><x>115</x></at>
+    <at><x>120</x></at>
+  </singleValues>
+
+
+</solution>
+  
+</jML>
+

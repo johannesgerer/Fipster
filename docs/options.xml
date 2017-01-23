@@ -1,0 +1,63 @@
+
+
+
+<option id="Option2">
+  <discountingRate>0.05</discountingRate>
+	<expectation>Expectation1</expectation>
+	<!-- the following order is important for simultanious decisions
+  -->
+	<times>
+		<!-- 'start' refers to first possible exercise date. -->
+		<stop>1e8</stop>
+		<!-- 'stop' refers to the closing of the hedging position and
+				 the last exercise possibility
+					  -->
+		<offset>1e8</offset>
+		<stepSize>0.1e7</stepSize>
+	</times>
+	<!-- 
+	<sigmaFactor>.2</sigmaFactor>
+					  -->
+	<entropicTheta>-0.001</entropicTheta>
+	<!--        infinite transaction costs disable any trading, except the
+       closing of the position in the last step
+					  -->
+	<hedging>
+		<transactionCosts k0="0.0" k1="0.0001"  infinite="false"/>
+    <!-- possible hedging positions are given by the following grid -->
+		<grid>hedging_grid_f</grid>
+		<!-- optional: use the delta of the enclosed field to hedge
+		     triggered by one of the following methods:
+
+		     corridor = ?double (ot yet implemented
+         always (default)
+ 
+
+         without deltaHedging, the optimal hedging position is
+         determined and used
+
+         todoPerformace: currently the program will calculate the results for
+         all hedging ratios and then use only the one closest to
+         delta. the only reason was to save time on implementation.
+
+         delta hedging is disabled for exercise=never arguments.
+         
+		-->
+		<deltaHedging>
+			<option id="AmOption" exercise="always"/>
+		</deltaHedging>
+	</hedging>
+	<exercise>
+		<implicit>false</implicit>
+		<value>payoff1</value>
+	</exercise>
+</option>
+
+  
+
+
+
+
+  
+
+

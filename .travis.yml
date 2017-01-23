@@ -1,0 +1,50 @@
+language: cpp
+before_script:
+  - wget https://www.threadingbuildingblocks.org/sites/default/files/software_releases/linux/tbb2017_20161128oss_lin_0.tgz
+  - tar xf tbb2017_20161128oss_lin_0.tgz
+  - mv tbb2017_20161128oss/include/tbb include
+env:
+  global:
+    - LIBRARY_PATH=tbb2017_20161128oss/lib/intel64/gcc4.7/
+    - LD_LIBRARY_PATH=tbb2017_20161128oss/lib/intel64/gcc4.7/
+  matrix:
+    - TARGET=runo
+    - TARGET=opt GCC4=1
+    - TARGET=debug GCC4=1
+    - TARGET=opt
+    - TARGET=run
+    - TARGET=debug
+sudo: required
+dist: trusty
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    # - sourceline: 'ppa:krzysztof-trzepla/onedata'
+    packages:
+    - clang
+    # - libtbb-dev=4.4~20151115-0ubuntu3ppa1~trusty
+    - libeigen3-dev
+    - libboost-filesystem-dev
+    - libboost-program-options-dev
+    - libboost-system-dev
+compiler:
+  - clang
+  - gcc
+
+script: make $TARGET -j4
+
+matrix:
+  exclude:
+    - env: TARGET=opt GCC4=1
+      compiler: clang
+    - env: TARGET=debug GCC4=1
+      compiler: clang
+    
+  allow_failures:
+  - env: TARGET=runo
+  - env: TARGET=run
+
+install:
+- if [ "$CXX" = "g++" -a -z "$GCC4"]; then sudo apt-get install gcc-6 g++-6; export CXX="g++-6" CC="gcc-6"; fi
+- $CXX --version

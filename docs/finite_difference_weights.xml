@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jML>
+  <!-- Specifies the weights used for the discretization of the PDE
+       operator 
+
+     1)  "stencilType" select the type of (local) stencil used (as
+       defined in finite_difference_stencils.h):
+
+       The available type with the number of points (exluding the center):
+
+	  		Full:         3^D-1
+	  		NoDiagonals:  2*D
+	  		TwoDiagonals: 2*D*D
+	  		OneDiagonal:  D+D*D
+
+			 (Diagonals are restricted to planes spanned by pairs of unit
+			 vectors of state variables)
+			 
+
+     2)  PDE: tye = BSIso | BSIsoGeom
+
+       BSIso: Black Scholes Isometric (identical vol, cor and dividend
+       for all assets)
+			 
+       BSIsoGeom:    (intended to be used on 1D Grids)
+			 
+			               the state variable corresponds to the
+			               geom. avg. of the state variables whose evolution
+			               is gouverned by a higher dimensional BSIso
+			 
+     3) partialDerivativeOrder
+
+        The order of partial derivatives to be considered in the
+        minimization of the truncation error
+				
+     4) higherOrderWeight
+
+        Weight to be used for contributions to the truncation error
+        estimate of partial derivative coefficients for orders higher
+        than 2.
+
+	-->
+  <finiteDifferenceWeights id="BSiso1">
+    <stencilType>OneDiagonal</stencilType>
+    <PDE type="BSIso">
+      <interest>0.05</interest>
+      <volatility>0.2</volatility>
+      <correlation>0.2</correlation>
+      <dividend>0.09</dividend>
+    </PDE>
+    <partialDerivativeOrder>3</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+
+  <finiteDifferenceWeights id="BSiso1r">
+    <stencilType>OneDiagonal</stencilType>
+    <PDE type="BSIsoGeoAvg">
+      <finiteDifferenceWeights>BSiso1</finiteDifferenceWeights>
+      <dimension fromGrid="Grid1"/>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+  </finiteDifferenceWeights>
+
+</jML>

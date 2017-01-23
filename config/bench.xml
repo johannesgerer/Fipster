@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is not compatible with the current version of Fipster -->
+<jML>
+  <globalConfig>
+    <tests>
+      <splitting tolerance="1e-12"> true </splitting>
+      <A_o> true </A_o>
+      <tridiagonally_split_grid_operator> true </tridiagonally_split_grid_operator>
+      <bc_inversion> true </bc_inversion>
+      <gsi_gather_scatter> true </gsi_gather_scatter>
+      <grid_iterators> true </grid_iterators>
+      <boundary_condition_iterator> true </boundary_condition_iterator>
+    </tests>
+    <flow_graph>
+      <serial> false </serial>
+      <processors>
+        <!-- 0 = 'automatic'  --> 0
+      </processors>
+    </flow_graph>
+    <years_per_btick>0.000005</years_per_btick>
+    <outputPath>../output/AMOptBenchmark</outputPath>
+  </globalConfig>
+
+<grid id="grid1">
+  <stateVariable nr="1" >
+    <n>100</n>
+    <lowerBound>0</lowerBound>
+    <upperBound>200.0</upperBound>
+    <spacing type="exponential">
+      <h>2</h>
+    </spacing>
+    <tolerance>1e-14</tolerance>
+  </stateVariable>
+</grid>
+
+<boundaryConditions id="BCs1" tolerance="1e-14">
+  <stateVariable nr="1">
+    <lower  type="Dirichlet" inhomSource="exerciseValue" />
+    <upper  type="vonNeumann" inhomSource="exerciseValue"/>
+  </stateVariable>
+</boundaryConditions>
+  
+<finiteDifferenceWeights id="BSIsoW">
+  <stencilType>OneDiagonal</stencilType>
+  <PDE type="BSIso">
+    <interest>0.03</interest>
+    <volatility>0.2</volatility>
+    <correlation>0.5</correlation>
+    <dividend>0.0</dividend>
+  </PDE>
+  <partialDerivativeOrder>2</partialDerivativeOrder>
+  <higherOrderWeight>0.9</higherOrderWeight>
+</finiteDifferenceWeights>
+
+  <finiteDifferenceWeights id="W2">
+    <stencilType>OneDiagonal</stencilType>
+    <PDE type="BSIsoGeom">
+      <finiteDifferenceWeights>BSIsoW</finiteDifferenceWeights>
+      <dimension>2</dimension>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+
+  <finiteDifferenceWeights id="W3">
+    <stencilType>OneDiagonal</stencilType>
+    <PDE type="BSIsoGeom">
+      <finiteDifferenceWeights>BSIsoW</finiteDifferenceWeights>
+      <dimension>3</dimension>
+    </PDE>
+    <partialDerivativeOrder>2</partialDerivativeOrder>
+    <higherOrderWeight>0.9</higherOrderWeight>
+  </finiteDifferenceWeights>
+
+<field id="payoff1" type="explicit_field">
+  <type>PutPayoff</type>
+  <strike>100</strike>
+</field>
+
+  <field id="AmPut1DBench" type="expectation_value">
+    <field>payoff1</field>
+    <boundaryConditions>BCs1</boundaryConditions>
+    <finiteDifferenceWeights>BSIsoW</finiteDifferenceWeights>
+    <stoppingTime min="0" max="200000" />
+    <timeStepping>
+      <offset>0</offset>
+      <stepSize>200</stepSize>
+      <strangSymmetrization>true</strangSymmetrization>
+      <theta>0.5</theta>
+      <rannacherTimeStepping steps="5">
+        <stepSize>05</stepSize>
+        <strangSymmetrization>false</strangSymmetrization>
+        <theta>1</theta>
+      </rannacherTimeStepping>
+    </timeStepping>
+  </field>
+
+  <field id="AmPut2DBench" type="expectation_value">
+    <field>payoff1</field>
+    <boundaryConditions>BCs1</boundaryConditions>
+    <finiteDifferenceWeights>W2</finiteDifferenceWeights>
+      <stoppingTime min="0" max="200000" />
+      <timeStepping>
+        <offset>0</offset>
+        <stepSize>200</stepSize>
+        <strangSymmetrization>true</strangSymmetrization>
+        <theta>0.5</theta>
+        <rannacherTimeStepping steps="5">
+          <stepSize>05</stepSize>
+          <strangSymmetrization>false</strangSymmetrization>
+          <theta>1</theta>
+        </rannacherTimeStepping>
+      </timeStepping>
+    </field>
+
+    <field id="AmPut3DBench" type="expectation_value">
+      <field>payoff1</field>
+      <boundaryConditions>BCs1</boundaryConditions>
+      <finiteDifferenceWeights>W3</finiteDifferenceWeights>
+        <stoppingTime min="0" max="200000" />
+        <timeStepping>
+          <offset>0</offset>
+          <stepSize>200</stepSize>
+          <strangSymmetrization>true</strangSymmetrization>
+          <theta>0.5</theta>
+          <rannacherTimeStepping steps="5">
+            <stepSize>05</stepSize>
+            <strangSymmetrization>false</strangSymmetrization>
+            <theta>1</theta>
+          </rannacherTimeStepping>
+        </timeStepping>
+      </field>
+
+
+<solution active="1" name="AmericanPutBenchmark">
+  <fields>
+  <field>AmPut1DBench</field>
+  <field>AmPut2DBench</field>
+  <field>AmPut3DBench</field>
+  </fields>
+  <interval>
+    <start>0</start>
+    <offset>0</offset>
+    <stop>200000</stop>
+    <stepSize>4000</stepSize>
+  </interval>
+  <fixedPlotTime>200000</fixedPlotTime>
+  <grid>grid1</grid>
+  <singleValues>
+    <at>
+      <x>100</x>
+    </at>
+  </singleValues>
+
+
+</solution>
+  
+</jML>
+

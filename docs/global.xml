@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jML>
+
+  <globalConfig>
+    <tests>
+      <splitting tolerance="1e-12"> true </splitting>
+      <A_o> true </A_o>
+      <tridiagonally_split_grid_operator> true </tridiagonally_split_grid_operator>
+      <bc_inversion> true </bc_inversion>
+      <gsi_gather_scatter> true </gsi_gather_scatter>
+      <grid_iterators> true </grid_iterators>
+      <boundary_condition_iterator> true </boundary_condition_iterator>
+    </tests>
+    <flow_graph>
+      <serial> false </serial>
+      <processors>
+        <!-- 0 = 'automatic'  --> 0
+      </processors>
+    </flow_graph>
+    <years_per_btick>0.000005</years_per_btick>
+    <!-- btick is the smallest unit of time represented internalls by
+         a int64, i.e. as the set [-2^63,2^63]  
+
+         FYI: 2^63 = 10^18.9 
+		     1a year = 10^7.5 seconds -->
+    <outputPath>output</outputPath>
+  </globalConfig>
+  
+  <!-- THE ORDER IS IMPORTANT -->
+  <file>boundary_conditions.xml</file>
+  <file>grids.xml</file>
+  <file>finite_difference_weights.xml</file>
+  <file>fields.xml</file>
+  <file>solutions.xml</file>
+  <file>benchmark.xml</file>
+  
+</jML>
+

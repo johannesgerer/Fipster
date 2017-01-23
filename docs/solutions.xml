@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jML>
+
+  <!-- 1. Alternative:
+      
+        To save the solution at several times during a time interval, use the <interval> tag:
+   
+          <times>
+            <start>0</start>
+            <stop>0</stop>
+            <offset>0</offset>
+            <stepSize>100</stepSize>
+          </times>
+  
+        2. Alternative: (not longer available)
+        To save the solution at one exactly one time, use the <time> tag:
+        
+        <time>123</time>
+				
+ \todo takes also fixedPlotTime as one additional time slot, which doublicates the functionality of time somewhat... WELL: this time is used to be constantly displayed even when looking at other times, so is useful 
+  -->
+  <!-- 
+  <field calculateAsGeomAverageOn="1DGrid1">Call1</field>
+    <grid>Grid2</grid>
+      The value for each grid point in the solution file should be 
+      the field's value calculated on a 1D Grid (1DGrid1)
+      corresponding to the arithmetic average of the Grid2's state.
+      Missing values that are not on the 1D-grid and thus not calculated are 
+      interpolated using linear interpolation.
+  -->
+
+  <solution active="0" id="testSol2">
+    <fields>
+      <field>Call1</field>
+    </fields>
+    <times>
+      <start>0</start>
+      <offset>0</offset>
+      <stop>30000</stop>
+      <stepSize>500</stepSize>
+    </times>
+    <grid>Grid2</grid>
+  </solution>
+
+  <solution active="0" id="testSol">
+    <fields>
+      <field >Call1</field>
+      <field>CallOptionCN</field>
+    </fields>
+    <times>
+      <start>0</start>
+      <stepSize>2000</stepSize>
+    </times>
+    <fixedPlotTime>60000</fixedPlotTime>
+    <grid>Grid2</grid>
+  </solution>
+
+ <!-- hedgingPos="true|false" : print hedging position as hedger title, default false -->
+<solution active="1" id="Decisions1">
+  <fields>
+	<!-- 'exercise=never' results in \pr_i(H_i), i.e. the market
+	     arbitrage opportunity 
+
+	 Exercise  { never,
+									 expiration,
+									 always }
+									 
+									this is needed internally to get \pr_i(H_i) CodeRefMA
+
+   skip = uint > 1  (default 1)
+
+			 determines how many pricing function calculations happen
+			 between two hedges.
+
+       Old note: A value higher than 1 makes only sense non-time consistent pricing functions 
+
+
+	 hedgingBands = true|false (default: false)
+
+      to output the boundaries of the No-Hedging band and the optimal Hedging Ratios
+-->
+		<!-- <option id="Option1" exercise="expiration"> -->
+		<option id="Option1" exercise="always">
+	<!-- to restrict hedging ratios specify the desired vectors
+	     manually. without values, every possible hedging position is
+	     used
+  -->
+			<!-- <at><n>1</n></at> -->
+			<!-- <at><n>15</n></at> -->
+			<at><n>54</n></at>
+		</option>
+
+		<option id="Option2" exercise="always">
+			<at><n>54</n></at>
+		</option>
+  </fields>
+  <times>
+    <start>.6e8</start>
+    <offset>1e8</offset>
+    <stop>1e8</stop>
+    <stepSize>.1e7</stepSize>
+  </times>
+  <fixedPlotTime>1e8</fixedPlotTime>
+  <grid>grid1</grid>
+  <singleValues>
+    <at>
+      <x>100</x>
+    </at>
+  </singleValues>
+
+
+</solution>
+
+<!--
+  <solution active="1" name="testSol3">
+    <fields>
+      <field>CallOptionCN</field>
+    </fields>
+    <time>297</time>
+    <grid>Grid2</grid>
+  </solution>
+  -->
+</jML>

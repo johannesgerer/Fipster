@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jML>
+
+    <!-- Every node "boundaryConditions" represents 
+ the one set of boundary conditions, with a name, that
+ can be used in the configuration of options.          
+
+tolerance = tolerance for Norm(B * Binv) + Norm(Binv * B)
+            (see inversion_residuum in Math.h)
+						
+            Enabled via the bc_inversion test (see global.xml)
+
+
+Every child node "boundaryCondition" represents the boundary condition
+for a pair of parallel boundary layers of the hypercube:
+
+stateVariable = "{integer_value>0}" specifies which state variable the
+                BC apply to
+
+<lower> indiciates the boundary layer with the lower grid index value. 
+<upper> indiciates the boundary layer with the upper grid index value. 
+
+type = "vonNeumann" specifies that the (inward) normal
+         derivatives on the boundary layers are determined
+
+         "Dirichlet" specifies that the values on the boudary
+         layers are determined
+        
+inhomValue = "vonNeumann" specifies that the normal
+             derivatives of the data field are used
+
+             "Dirichlet" specifies that the values of the data field ares used
+             "zero" indicates, that the BC is zero.
+             "{NOT SET}" ==> take "{type}" attribute
+
+(This is ignored for inhomValue "zero")
+
+inhomSource = "exerciseValue" indicates, that the BV data is
+              inferred from the options (american) payoff
+
+             "futureValue" ... 
+            
+//CodeRefB (only 0
+timeSteps = "{n}"  (default:0,  ignored for "Sources" other than "futureValue"    )
+              > 0 :  take the futureValue that lies {n} steps in the future
+              = 0:  take the futureValue from futureTime
+                
+discount = "yes|no"
+   -->
+
+    <boundaryConditions id="testBC" tolerance="1e-14">
+
+      <stateVariable nr="1">
+        <lower  type="Dirichlet" inhomSource="exerciseValue" />
+        <upper  type="vonNeumann" inhomSource="exerciseValue"/>
+      </stateVariable>
+
+      <stateVariable nr="2">
+        <upper  type="Dirichlet" inhomSource="exerciseValue" inhomValue="Dirichlet" timeSteps="1"/>
+        <lower  type="vonNeumann" inhomValue="zero" />
+      </stateVariable>
+
+      <stateVariable nr="3">
+        <lower  type="vonNeumann" inhomSource="exerciseValue" inhomValue="vonNeumann" timeSteps="1"/>
+        <upper  type="vonNeumann" inhomSource="exerciseValue" inhomValue="Dirichlet" />
+      </stateVariable>
+
+    </boundaryConditions>
+
+</jML>
